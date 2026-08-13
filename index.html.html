@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alur Penjualan - Order to Cash</title>
+    <style>
+        /* ----- RESET & BASE (Furniture Theme) ----- */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background: #f5efe8;
+            padding: 0;
+            color: #2c1810;
+            min-height: 100vh;
+        }
+
+        /* Furniture Colors - Warm & Elegant */
+        :root {
+            --furniture-brown: #5a3a2a;
+            --furniture-brown-dark: #3d2518;
+            --furniture-brown-light: #8b6b4a;
+            --furniture-gold: #c9a96e;
+            --furniture-gold-light: #e8d5b0;
+            --furniture-cream: #faf3ea;
+            --furniture-white: #ffffff;
+            --furniture-gray: #f0ebe5;
+            --furniture-border: #e0d5c8;
+            --furniture-text: #2c1810;
+            --furniture-shadow: 0 4px 24px rgba(44, 24, 16, 0.08);
+            --furniture-shadow-hover: 0 8px 40px rgba(44, 24, 16, 0.14);
+        }
+
+        /* ----- TOP BAR (Furniture Style) ----- */
+        .furniture-topbar {
+            background: var(--furniture-brown);
+            padding: 14px 0;
+            border-bottom: 4px solid var(--furniture-gold);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 16px rgba(44, 24, 16, 0.12);
+        }
+
+        .furniture-topbar .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .furniture-topbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .furniture-topbar .logo .logo-icon {
+            background: var(--furniture-gold);
+            color: var(--furniture-brown-dark);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 900;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .furniture-topbar .logo .logo-text {
+            color: var(--furniture-cream);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .furniture-topbar .logo .logo-text span {
+            color: var(--furniture-gold);
+        }
+
+        .furniture-topbar .doc-badge {
+            background: rgba(255,255,255,0.08);
+            padding: 6px 20px;
+            border-radius: 30px;
+            color: var(--furniture-cream);
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(4px);
+        }
+
+        .furniture-topbar .doc-badge strong {
+            color: var(--furniture-gold);
+        }
+
+        /* ----- MAIN CONTAINER ----- */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 35px 40px;
+        }
+
+        /* ----- HERO / HEADER (Furniture Style) ----- */
+        .hero-section {
+            background: linear-gradient(135deg, var(--furniture-cream) 0%, #f5ede4 100%);
+            border-radius: 24px;
+            padding: 40px 48px;
+            margin-bottom: 30px;
+            box-shadow: var(--furniture-shadow);
+            border: 1px solid var(--furniture-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-section::after {
+            content: '🪑';
+            position: absolute;
+            bottom: 10px;
+            right: 30px;
+            font-size: 80px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .hero-section .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section .hero-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--furniture-text);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .hero-section .hero-title .highlight {
+            background: var(--furniture-gold);
+            padding: 4px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--furniture-brown-dark);
+            letter-spacing: 0.3px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-section .hero-sub {
+            color: #6a5a4a;
+            font-size: 16px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hero-section .hero-sub .tag {
+            background: rgba(90, 58, 42, 0.06);
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #5a3a2a;
+            border: 1px solid rgba(90, 58, 42, 0.08);
+        }
+
+        .hero-section .hero-sub .tag.gold {
+            background: rgba(201, 169, 110, 0.2);
+            color: var(--furniture-brown-dark);
+            border-color: rgba(201, 169, 110, 0.2);
+        }
+
+        .hero-section .hero-sub .tag.cream {
+            background: var(--furniture-cream);
+            color: var(--furniture-brown);
+        }
+
+        /* ----- MODE BAR (Furniture Style) ----- */
+        .mode-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            padding: 8px 18px;
+            background: var(--furniture-white);
+            border-radius: 40px;
+            border: 1px solid var(--furniture-border);
+            max-width: 660px;
+            margin-left: auto;
+            flex-wrap: wrap;
+            box-shadow: var(--furniture-shadow);
+        }
+
+        .mode-bar .mode-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #5a3a2a;
+        }
+
+        .mode-bar .mode-status .badge-mode {
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-mode.readonly {
+            background: #e8e0d8;
+            color: #5a3a2a;
+        }
+
+        .badge-mode.editable {
+            background: #e8dcc8;
+            color: var(--furniture-brown-dark);
+        }
+
+        .mode-bar .lock-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mode-bar .lock-control input[type="password"] {
+            padding: 5px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--furniture-border);
+            font-size: 12px;
+            width: 130px;
+            background: white;
+            outline: none;
+            transition: 0.15s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mode-bar .lock-control input[type="password"]:focus {
+            border-color: var(--furniture-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+        }
+
+        .mode-bar .lock-control .btn-lock {
+            padding: 5px 18px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: var(--furniture-brown);
+            color: white;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mode-bar .lock-control .btn-lock:hover {
+            background: var(--furniture-brown-dark);
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(90, 58, 42, 0.3);
+        }
+
+        .mode-bar .lock-control .btn-lock.unlock {
+            background: var(--furniture-gold);
+            color: var(--furniture-brown-dark);
+        }
+
+        .mode-bar .lock-control .btn-lock.unlock:hover {
+            background: #b8985a;
+        }
+
+        .mode-bar .share-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mode-bar .share-controls .btn-share {
+            padding: 5px 16px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #0f9d58;
+            color: white;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mode-bar .share-controls .btn-share:hover {
+            background: #0b7a45;
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(15, 157, 88, 0.3);
+        }
+
+        .mode-bar .share-controls .btn-share.import-btn {
+            background: var(--furniture-gold);
+            color: var(--furniture-brown-dark);
+        }
+
+        .mode-bar .share-controls .btn-share.import-btn:hover {
+            background: #b8985a;
+            box-shadow: 0 4px 12px rgba(201, 169, 110, 0.4);
+        }
+
+        .mode-bar .share-controls .btn-share.reset-btn {
+            background: #b32e3a;
+        }
+
+        .mode-bar .share-controls .btn-share.reset-btn:hover {
+            background: #8a1e28;
+            box-shadow: 0 4px 12px rgba(179, 46, 58, 0.3);
+        }
+
+        #importFileInput {
+            display: none;
+        }
+
+        /* ----- PROGRESS BAR (Visual Flow) ----- */
+        .flow-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 45px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .flow-indicator::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 30px;
+            right: 30px;
+            height: 4px;
+            background: #e0d5c8;
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            background: white;
+            padding: 0 10px;
+        }
+
+        .flow-step .circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            background: #d5c8bc;
+            transition: 0.3s;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+        }
+
+        .flow-step .label {
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            color: #5a4a3a;
+            letter-spacing: 0.3px;
+            max-width: 100px;
+        }
+
+        .flow-step:nth-child(1) .circle { background: var(--furniture-brown-dark); }
+        .flow-step:nth-child(2) .circle { background: var(--furniture-brown); }
+        .flow-step:nth-child(3) .circle { background: var(--furniture-brown-light); }
+        .flow-step:nth-child(4) .circle { background: var(--furniture-gold); color: var(--furniture-brown-dark); }
+        .flow-step:nth-child(5) .circle { background: #7a5a3a; }
+
+        /* ----- ACCORDION STEPS (Furniture Style) ----- */
+        .step-wrapper {
+            margin-top: 16px;
+            border-radius: 20px;
+            border: 1px solid var(--furniture-border);
+            background: var(--furniture-white);
+            transition: box-shadow 0.25s ease;
+            overflow: hidden;
+            box-shadow: var(--furniture-shadow);
+        }
+
+        .step-wrapper:hover {
+            box-shadow: var(--furniture-shadow-hover);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            padding: 18px 26px;
+            cursor: pointer;
+            gap: 16px;
+            background: var(--furniture-white);
+            transition: background 0.2s;
+            border-left: 6px solid transparent;
+            user-select: none;
+        }
+
+        .step-wrapper.active .step-header {
+            background: #faf3ea;
+            border-left-color: var(--furniture-gold);
+        }
+
+        .step-header:hover {
+            background: #faf3ea;
+        }
+
+        .step-number {
+            font-size: 20px;
+            font-weight: 900;
+            color: #c5b8aa;
+            min-width: 38px;
+            transition: 0.2s;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .step-wrapper.active .step-number {
+            color: var(--furniture-brown);
+        }
+
+        .step-title-group {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--furniture-text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .step-title .badge {
+            font-size: 10px;
+            padding: 3px 16px;
+            border-radius: 30px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .step-title .badge.brown {
+            background: #e8dcc8;
+            color: var(--furniture-brown-dark);
+        }
+
+        .step-title .badge.gold {
+            background: var(--furniture-gold-light);
+            color: var(--furniture-brown-dark);
+        }
+
+        .step-title .badge.cream {
+            background: var(--furniture-cream);
+            color: var(--furniture-brown);
+        }
+
+        .step-title .badge.green {
+            background: #dce8d8;
+            color: #3a5a2a;
+        }
+
+        .step-title .badge.rose {
+            background: #f0e0d8;
+            color: #7a3a2a;
+        }
+
+        .step-sub {
+            font-size: 13px;
+            color: #7a6a5a;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        .step-toggle-icon {
+            font-size: 24px;
+            color: #c5b8aa;
+            transition: transform 0.3s ease;
+            margin-left: auto;
+            font-weight: 300;
+        }
+
+        .step-wrapper.active .step-toggle-icon {
+            transform: rotate(180deg);
+            color: var(--furniture-brown);
+        }
+
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+            padding: 0 26px;
+            background: var(--furniture-white);
+            border-top: 1px solid transparent;
+        }
+
+        .step-wrapper.active .step-content {
+            max-height: 2500px;
+            padding: 20px 26px 28px 26px;
+            border-top-color: var(--furniture-border);
+        }
+
+        /* ----- ALUR PROSES ----- */
+        .process-desc {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 40px;
+            background: #faf3ea;
+            padding: 16px 22px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid var(--furniture-border);
+        }
+
+        .process-desc .label-desc {
+            font-weight: 600;
+            color: var(--furniture-brown);
+            min-width: 100px;
+        }
+
+        .process-desc .steps-flow {
+            color: var(--furniture-brown);
+            font-weight: 500;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 18px;
+        }
+
+        .process-desc .steps-flow span {
+            background: white;
+            padding: 2px 14px;
+            border-radius: 30px;
+            border: 1px solid #e0d5c8;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--furniture-brown);
+        }
+
+        /* ----- GRID DOKUMEN ----- */
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .doc-item {
+            background: #faf3ea;
+            border-radius: 12px;
+            padding: 16px 18px;
+            border: 1px solid var(--furniture-border);
+            transition: 0.15s;
+            position: relative;
+        }
+
+        .doc-item:hover {
+            background: #f5ede4;
+            border-color: var(--furniture-gold);
+        }
+
+        .doc-item .doc-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--furniture-brown-dark);
+            display: block;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .doc-item .doc-name:hover {
+            color: var(--furniture-gold);
+        }
+
+        .doc-item .doc-name.has-file {
+            color: #0f9d58;
+        }
+
+        .doc-item .doc-name.has-file:hover {
+            color: #0b7a45;
+            text-decoration: underline;
+        }
+
+        .doc-item .doc-name .file-indicator-doc {
+            font-size: 11px;
+            font-weight: 400;
+            color: #0f9d58;
+            margin-left: 6px;
+        }
+
+        .doc-item .doc-name .file-indicator-doc.empty {
+            color: #b5a898;
+        }
+
+        .doc-item .doc-fungsi {
+            font-size: 13px;
+            color: #6a5a4a;
+            line-height: 1.5;
+        }
+
+        .doc-item .doc-ket {
+            font-size: 12px;
+            color: #8a7a6a;
+            margin-top: 8px;
+            border-top: 1px dashed #e0d5c8;
+            padding-top: 8px;
+            font-style: italic;
+        }
+
+        /* ----- UPLOAD & FILE LIST ----- */
+        .doc-item .upload-wrapper {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            border-top: 1px solid var(--furniture-border);
+            padding-top: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .doc-item .upload-wrapper input[type="file"] {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid var(--furniture-border);
+            background: white;
+            cursor: pointer;
+            max-width: 160px;
+            transition: opacity 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .doc-item .upload-wrapper input[type="file"]::file-selector-button {
+            background: var(--furniture-brown);
+            color: white;
+            border: none;
+            padding: 3px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 10px;
+            cursor: pointer;
+            margin-right: 6px;
+            transition: 0.15s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .doc-item .upload-wrapper input[type="file"]::file-selector-button:hover {
+            background: var(--furniture-brown-dark);
+        }
+
+        .doc-item .upload-wrapper .upload-label {
+            font-size: 11px;
+            color: #8a7a6a;
+        }
+
+        .doc-item .upload-wrapper .drive-hint {
+            font-size: 10px;
+            color: #1a7a5a;
+            background: #e6f5ed;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: 0.15s;
+            border: 1px solid transparent;
+            font-weight: 600;
+        }
+
+        .doc-item .upload-wrapper .drive-hint:hover {
+            background: #d0ede0;
+            border-color: #1a7a5a;
+        }
+
+        .doc-item .upload-wrapper .drive-hint.readonly {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .doc-item .upload-wrapper.hidden-upload {
+            display: none;
+        }
+
+        .doc-item .file-list {
+            display: none;
+        }
+
+        .doc-item .file-list .file-chip {
+            background: white;
+            border: 1px solid #d5c8bc;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--furniture-brown);
+            font-weight: 500;
+            transition: 0.1s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .doc-item .file-list .file-chip .file-icon {
+            font-size: 16px;
+        }
+
+        .doc-item .file-list .file-chip .file-name {
+            color: var(--furniture-brown-dark);
+            font-weight: 600;
+            max-width: 130px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .doc-item .file-list .file-chip .file-size {
+            font-size: 10px;
+            color: #8a7a6a;
+            font-weight: 400;
+        }
+
+        .doc-item .file-list .file-chip .btn-open {
+            background: var(--furniture-brown);
+            color: white;
+            border: none;
+            padding: 3px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .doc-item .file-list .file-chip .btn-open:hover {
+            background: var(--furniture-brown-dark);
+            transform: scale(1.02);
+        }
+
+        .doc-item .file-list .file-chip .btn-open.google-drive {
+            background: #0f9d58;
+        }
+
+        .doc-item .file-list .file-chip .btn-open.google-drive:hover {
+            background: #0b7a45;
+        }
+
+        .doc-item .file-list .file-chip .remove-file {
+            background: transparent;
+            border: none;
+            color: #b32e3a;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0 4px;
+            margin-left: 2px;
+            transition: opacity 0.3s;
+        }
+
+        .doc-item .file-list .file-chip .remove-file:hover {
+            color: #8a1e28;
+        }
+
+        .doc-item .file-list .file-chip .remove-file.readonly {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .doc-item .file-list .file-chip .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .doc-item .file-list .empty-files {
+            font-size: 12px;
+            color: #b5a898;
+            font-style: italic;
+            padding: 4px 0;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 900px) {
+            .furniture-topbar .container { padding: 0 16px; flex-direction: column; text-align: center; }
+            .main-container { padding: 16px; }
+            .hero-section { padding: 20px; }
+            .hero-section .hero-title { font-size: 22px; }
+            .hero-section::after { display: none; }
+            .flow-indicator { display: none; }
+            .step-header { padding: 14px 18px; flex-wrap: wrap; }
+            .step-title { font-size: 16px; }
+            .step-number { min-width: 30px; font-size: 17px; }
+            .step-content { padding: 0 18px; }
+            .step-wrapper.active .step-content { padding: 14px 18px 18px; }
+            .doc-grid { grid-template-columns: 1fr; }
+            .doc-item .upload-wrapper input[type="file"] { max-width: 100%; }
+            .mode-bar { max-width: 100%; flex-wrap: wrap; justify-content: center; margin-left: 0; padding: 8px 14px; }
+            .mode-bar .lock-control input[type="password"] { width: 100px; }
+            .hero-section .hero-sub { flex-direction: column; align-items: flex-start; gap: 8px; }
+        }
+
+        @media (min-width: 901px) and (max-width: 1200px) {
+            .doc-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--furniture-brown);
+            color: white;
+            padding: 16px 28px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            pointer-events: none;
+            max-width: 380px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 16px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* Google Drive Upload Modal */
+        .drive-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 24, 16, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .drive-modal.show {
+            display: flex;
+        }
+
+        .drive-modal-content {
+            background: var(--furniture-white);
+            border-radius: 24px;
+            padding: 34px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .drive-modal-content h3 {
+            margin-bottom: 8px;
+            color: var(--furniture-text);
+            font-size: 22px;
+            font-weight: 800;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .drive-modal-content p {
+            color: #6a5a4a;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .drive-modal-content .drive-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .drive-modal-content .drive-input-group input {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--furniture-border);
+            font-size: 13px;
+            min-width: 200px;
+            font-family: 'Inter', sans-serif;
+            transition: 0.15s;
+        }
+
+        .drive-modal-content .drive-input-group input:focus {
+            border-color: var(--furniture-gold);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+        }
+
+        .drive-modal-content .drive-input-group .btn-drive-add {
+            background: #0f9d58;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .drive-modal-content .drive-input-group .btn-drive-add:hover {
+            background: #0b7a45;
+            transform: scale(1.02);
+        }
+
+        .drive-modal-content .drive-input-group .btn-drive-cancel {
+            background: var(--furniture-gray);
+            color: #5a4a3a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .drive-modal-content .drive-input-group .btn-drive-cancel:hover {
+            background: #e0d5c8;
+        }
+
+        .drive-modal-content .drive-hint-text {
+            font-size: 12px;
+            color: #7a6a5a;
+            margin-top: 14px;
+            background: #faf3ea;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--furniture-border);
+        }
+
+        .drive-modal-content .drive-hint-text code {
+            background: #e8e0d8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .drive-modal-content .drive-example {
+            font-size: 12px;
+            color: #0f9d58;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: #e8f5ee;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .furniture-footer {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 2px solid var(--furniture-border);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #7a6a5a;
+        }
+
+        .furniture-footer .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .furniture-footer .footer-left .sop-badge {
+            background: var(--furniture-gold);
+            padding: 4px 18px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--furniture-brown-dark);
+        }
+
+        .furniture-footer .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .furniture-footer .footer-right .kpi-tag {
+            background: var(--furniture-gray);
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #5a4a3a;
+        }
+
+        .furniture-footer .footer-right .kpi-tag.gold {
+            background: var(--furniture-gold-light);
+            color: var(--furniture-brown-dark);
+        }
+
+        .furniture-footer .footer-right .kpi-tag.brown {
+            background: #e8dcc8;
+            color: var(--furniture-brown-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR (Furniture Style) -->
+    <div class="furniture-topbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">🪑</div>
+                <div class="logo-text">Furniture <span>Living</span></div>
+            </div>
+            <div class="doc-badge">
+                📋 <strong>SOP/OPS-FIN/2026/008</strong> · Rev 2.0 · Efektif 13 Agustus 2026
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+
+        <!-- HERO SECTION -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-title">
+                    🪑 Alur Penjualan (Order-to-Cash)
+                    <span class="highlight">5 Tahap</span>
+                </div>
+                <div class="hero-sub">
+                    <span>Skala Perusahaan Besar · Dari Penawaran hingga Pembayaran Lunas</span>
+                    <span class="tag gold">Klik nama dokumen</span>
+                    <span class="tag cream">FIFO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODE BAR -->
+        <div class="mode-bar">
+            <div class="mode-status">
+                <span>🔒</span>
+                <span class="badge-mode editable" id="modeBadge">Dapat Diedit</span>
+            </div>
+            <div class="lock-control">
+                <input type="password" id="lockPassword" placeholder="Password">
+                <button class="btn-lock" id="lockBtn">🔒 Kunci</button>
+            </div>
+            <div class="share-controls">
+                <button class="btn-share" id="exportBtn">📤 Export Data</button>
+                <button class="btn-share import-btn" id="importBtn">📥 Import Data</button>
+                <button class="btn-share reset-btn" id="resetBtn">🗑️ Reset</button>
+            </div>
+            <input type="file" id="importFileInput" accept=".json">
+        </div>
+
+        <!-- Flow visual (Desktop) -->
+        <div class="flow-indicator">
+            <div class="flow-step"><div class="circle">1</div><div class="label">Penawaran</div></div>
+            <div class="flow-step"><div class="circle">2</div><div class="label">Pemesanan</div></div>
+            <div class="flow-step"><div class="circle">3</div><div class="label">Pengiriman</div></div>
+            <div class="flow-step"><div class="circle">4</div><div class="label">Penagihan</div></div>
+            <div class="flow-step"><div class="circle">5</div><div class="label">Arsip</div></div>
+        </div>
+
+        <!-- ===== STEP 1 ===== -->
+        <div class="step-wrapper" id="step1">
+            <div class="step-header">
+                <span class="step-number">01</span>
+                <div class="step-title-group">
+                    <div class="step-title">
+                        Pra-Penjualan &amp; Penawaran
+                        <span class="badge brown">Quotation</span>
+                    </div>
+                    <div class="step-sub">Inquiry → Kalkulasi → Kirim Quotation → Negosiasi</div>
+                </div>
+                <span class="step-toggle-icon">▾</span>
+            </div>
+            <div class="step-content">
+                <div class="process-desc">
+                    <span class="label-desc">⚡ Alur Proses:</span>
+                    <div class="steps-flow">
+                        <span>📩 Inquiry / Lead</span>
+                        <span>🧮 Kalkulasi Harga &amp; Margin</span>
+                        <span>📄 Kirim Quotation</span>
+                        <span>🤝 Negosiasi &amp; Revisi</span>
+                    </div>
+                </div>
+                <div class="doc-grid">
+                    <div class="doc-item" data-doc="rfq">
+                        <span class="doc-name" id="doc-rfq">📄 RFQ (Request for Quotation)</span>
+                        <span class="doc-fungsi">Dokumen dari klien yang meminta penawaran resmi.</span>
+                        <div class="doc-ket">Untuk perusahaan besar, proses ini formal dan tercatat.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="quotation">
+                        <span class="doc-name" id="doc-quotation">📑 Quotation / Surat Penawaran</span>
+                        <span class="doc-fungsi">Penawaran resmi berisi harga, syarat pembayaran, &amp; masa berlaku.</span>
+                        <div class="doc-ket">Harus memiliki nomor unik &amp; tanda tangan otorisasi.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="supporting">
+                        <span class="doc-name" id="doc-supporting">📎 Supporting Documents</span>
+                        <span class="doc-fungsi">Lampiran teknis, brosur, spesifikasi produk, atau studi kasus.</span>
+                        <div class="doc-ket">Membantu klien dalam evaluasi internal.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== STEP 2 ===== -->
+        <div class="step-wrapper" id="step2">
+            <div class="step-header">
+                <span class="step-number">02</span>
+                <div class="step-title-group">
+                    <div class="step-title">
+                        Pemesanan &amp; Kredit / Kontrak
+                        <span class="badge gold">Order</span>
+                    </div>
+                    <div class="step-sub">PO → Sales Order → Credit Check → Kontrak</div>
+                </div>
+                <span class="step-toggle-icon">▾</span>
+            </div>
+            <div class="step-content">
+                <div class="process-desc">
+                    <span class="label-desc">⚡ Alur Proses:</span>
+                    <div class="steps-flow">
+                        <span>📥 Purchase Order (PO)</span>
+                        <span>🔄 Konversi ke Sales Order (SO)</span>
+                        <span>🔍 Credit Check &amp; Approval</span>
+                        <span>✍️ Kontrak Penjualan</span>
+                    </div>
+                </div>
+                <div class="doc-grid">
+                    <div class="doc-item" data-doc="po">
+                        <span class="doc-name" id="doc-po">📥 Purchase Order (PO)</span>
+                        <span class="doc-fungsi">Pesanan resmi dari pembeli sebagai komitmen membeli.</span>
+                        <div class="doc-ket">Menjadi dasar hukum transaksi.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="so">
+                        <span class="doc-name" id="doc-so">🔄 Sales Order (SO)</span>
+                        <span class="doc-fungsi">Konfirmasi pesanan dari penjual yang tervalidasi di sistem ERP.</span>
+                        <div class="doc-ket">Berisi detail item, harga, dan tanggal kirim.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="contract">
+                        <span class="doc-name" id="doc-contract">📜 Kontrak Jual-Beli</span>
+                        <span class="doc-fungsi">Mengikat secara hukum untuk proyek besar / jangka panjang.</span>
+                        <div class="doc-ket">Bisa berupa Master Agreement atau Blanket Order.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="creditcheck">
+                        <span class="doc-name" id="doc-creditcheck">📊 Hasil Credit Check</span>
+                        <span class="doc-fungsi">Analisis kelayakan kredit pelanggan (laporan keuangan, limit).</span>
+                        <div class="doc-ket">Krusial untuk mengelola risiko piutang.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== STEP 3 ===== -->
+        <div class="step-wrapper" id="step3">
+            <div class="step-header">
+                <span class="step-number">03</span>
+                <div class="step-title-group">
+                    <div class="step-title">
+                        Pemenuhan &amp; Pengiriman
+                        <span class="badge green">Fulfillment</span>
+                    </div>
+                    <div class="step-sub">Picking → Packing → Pengiriman → Proof of Delivery</div>
+                </div>
+                <span class="step-toggle-icon">▾</span>
+            </div>
+            <div class="step-content">
+                <div class="process-desc">
+                    <span class="label-desc">⚡ Alur Proses:</span>
+                    <div class="steps-flow">
+                        <span>📦 Persiapan &amp; Picking</span>
+                        <span>📦 Packing &amp; Labeling</span>
+                        <span>🚚 Pengiriman</span>
+                        <span>✅ Proof of Delivery (POD)</span>
+                    </div>
+                </div>
+                <div class="doc-grid">
+                    <div class="doc-item" data-doc="picking">
+                        <span class="doc-name" id="doc-picking">📋 Picking List</span>
+                        <span class="doc-fungsi">Instruksi internal untuk petugas gudang mengambil barang.</span>
+                        <div class="doc-ket">Berisi lokasi &amp; jumlah barang.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="packing">
+                        <span class="doc-name" id="doc-packing">📦 Packing List</span>
+                        <span class="doc-fungsi">Daftar isi kemasan yang dikirimkan kepada klien.</span>
+                        <div class="doc-ket">Memudahkan klien saat pemeriksaan kedatangan.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="delivery">
+                        <span class="doc-name" id="doc-delivery">🚛 Delivery Order / Surat Jalan</span>
+                        <span class="doc-fungsi">Dokumen pengiriman yang menyertai barang.</span>
+                        <div class="doc-ket">Ditandatangani penerima sebagai bukti serah terima.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="bol">
+                        <span class="doc-name" id="doc-bol">✈️ Bill of Lading / Airway Bill</span>
+                        <span class="doc-fungsi">Dokumen pengangkutan dari pihak logistik (laut/udara).</span>
+                        <div class="doc-ket">Berfungsi sebagai bukti kontrak pengangkutan.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="pod">
+                        <span class="doc-name" id="doc-pod">✅ Proof of Delivery (POD)</span>
+                        <span class="doc-fungsi">Bukti tanda tangan penerimaan barang oleh klien.</span>
+                        <div class="doc-ket">Penting untuk menyelesaikan klaim atau sengketa.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== STEP 4 ===== -->
+        <div class="step-wrapper" id="step4">
+            <div class="step-header">
+                <span class="step-number">04</span>
+                <div class="step-title-group">
+                    <div class="step-title">
+                        Penagihan &amp; Pembayaran
+                        <span class="badge rose">Invoicing</span>
+                    </div>
+                    <div class="step-sub">Proforma Invoice → Invoice → Kirim Tagihan → Terima Pembayaran</div>
+                </div>
+                <span class="step-toggle-icon">▾</span>
+            </div>
+            <div class="step-content">
+                <div class="process-desc">
+                    <span class="label-desc">⚡ Alur Proses:</span>
+                    <div class="steps-flow">
+                        <span>🧾 Proforma Invoice (opsional)</span>
+                        <span>📄 Invoice / Faktur Resmi</span>
+                        <span>📨 Kirim Tagihan ke Klien</span>
+                        <span>💰 Penerimaan &amp; Rekonsiliasi</span>
+                    </div>
+                </div>
+                <div class="doc-grid">
+                    <div class="doc-item" data-doc="proforma">
+                        <span class="doc-name" id="doc-proforma">🧾 Proforma Invoice</span>
+                        <span class="doc-fungsi">Tagihan sementara untuk meminta uang muka (down payment).</span>
+                        <div class="doc-ket">Digunakan jika ada mekanisme pembayaran di muka.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="invoice">
+                        <span class="doc-name" id="doc-invoice">📄 Invoice / Faktur Penjualan</span>
+                        <span class="doc-fungsi">Tagihan resmi yang mencatat pendapatan &amp; menjadi piutang.</span>
+                        <div class="doc-ket">Wajib memuat nomor, jatuh tempo, dan syarat pembayaran.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="remittance">
+                        <span class="doc-name" id="doc-remittance">✉️ Remittance Advice</span>
+                        <span class="doc-fungsi">Notifikasi dari klien yang merinci pembayaran yang dikirim.</span>
+                        <div class="doc-ket">Membantu finance mencocokkan pembayaran.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="bank">
+                        <span class="doc-name" id="doc-bank">🏦 Bukti Transfer / Bank Statement</span>
+                        <span class="doc-fungsi">Bukti dari bank bahwa dana telah masuk.</span>
+                        <div class="doc-ket">Untuk rekonsiliasi bank dan penutupan piutang.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== STEP 5 ===== -->
+        <div class="step-wrapper" id="step5">
+            <div class="step-header">
+                <span class="step-number">05</span>
+                <div class="step-title-group">
+                    <div class="step-title">
+                        Pasca-Penjualan &amp; Arsip
+                        <span class="badge cream">Post-Sales</span>
+                    </div>
+                    <div class="step-sub">Return → Credit Note → Revenue Recognition → Arsip</div>
+                </div>
+                <span class="step-toggle-icon">▾</span>
+            </div>
+            <div class="step-content">
+                <div class="process-desc">
+                    <span class="label-desc">⚡ Alur Proses:</span>
+                    <div class="steps-flow">
+                        <span>↩️ Retur / Return (jika ada)</span>
+                        <span>📝 Credit / Debit Note</span>
+                        <span>📊 Pengakuan Pendapatan (Revenue)</span>
+                        <span>🗄️ Arsip Digital &amp; Audit Trail</span>
+                    </div>
+                </div>
+                <div class="doc-grid">
+                    <div class="doc-item" data-doc="rma">
+                        <span class="doc-name" id="doc-rma">↩️ RMA (Return Authorization)</span>
+                        <span class="doc-fungsi">Otorisasi dari penjual untuk menerima barang kembali.</span>
+                        <div class="doc-ket">Mengatur proses retur agar terstruktur.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="creditnote">
+                        <span class="doc-name" id="doc-creditnote">📝 Credit Note / Nota Kredit</span>
+                        <span class="doc-fungsi">Dokumen untuk mengurangi nilai tagihan (retur/diskon).</span>
+                        <div class="doc-ket">Dapat digunakan sebagai pengurang pembayaran di masa depan.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="debitnote">
+                        <span class="doc-name" id="doc-debitnote">📝 Debit Note</span>
+                        <span class="doc-fungsi">Dokumen untuk menagih tambahan biaya (penalti / penyimpanan).</span>
+                        <div class="doc-ket">Untuk koreksi/adjustment tambahan.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                    <div class="doc-item" data-doc="archive">
+                        <span class="doc-name" id="doc-archive">🗄️ Arsip Digital Lengkap</span>
+                        <span class="doc-fungsi">Kumpulan semua dokumen transaksi (PO, SO, Invoice, POD, dll).</span>
+                        <div class="doc-ket">Kepatuhan regulasi &amp; memudahkan audit internal/eksternal.</div>
+                        <div class="upload-wrapper">
+                            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt">
+                            <span class="upload-label">Pilih file</span>
+                            <span class="drive-hint">☁️ Tambah dari Drive</span>
+                        </div>
+                        <div class="file-list"><span class="empty-files">Belum ada file</span></div>
+                        <span class="lock-overlay">🔒</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="furniture-footer">
+            <div class="footer-left">
+                <span class="sop-badge">SOP/OPS-FIN/2026/008</span>
+                <span style="font-size:12px;">Revisi 2.0 · 13 Agustus 2026</span>
+            </div>
+            <div class="footer-right">
+                <span class="kpi-tag gold">📌 DSO</span>
+                <span class="kpi-tag">Audit Trail</span>
+                <span class="kpi-tag brown">SLA Pengiriman</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Google Drive Modal -->
+    <div class="drive-modal" id="driveModal">
+        <div class="drive-modal-content">
+            <h3>☁️ Tambahkan File dari Google Drive</h3>
+            <p>Masukkan link share dari file Google Drive Anda.</p>
+            <div class="drive-input-group">
+                <input type="text" id="driveLinkInput" placeholder="https://drive.google.com/file/d/...">
+                <button class="btn-drive-add" id="driveAddBtn">✅ Tambahkan</button>
+                <button class="btn-drive-cancel" id="driveCancelBtn">Batal</button>
+            </div>
+            <div class="drive-hint-text">
+                <strong>Cara mendapatkan link:</strong><br>
+                1. Buka file di Google Drive<br>
+                2. Klik <strong>Bagikan</strong> → <strong>Ubah menjadi publik</strong> atau <strong>Siapa saja dengan link</strong><br>
+                3. Salin link dan tempel di atas<br>
+                <br>
+                Contoh link: <code>https://drive.google.com/file/d/1ABC123xyz/view</code>
+            </div>
+            <div class="drive-example">
+                💡 <strong>Tips:</strong> Pastikan file sudah di-share secara publik agar orang lain bisa membukanya.
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">📂 Membuka dokumen...</div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            // ----- STATE -----
+            let isLocked = false;
+            const PASSWORD = 'admin123';
+            let currentDriveTarget = null;
+
+            // ----- DOM Elements -----
+            const modeBadge = document.getElementById('modeBadge');
+            const lockBtn = document.getElementById('lockBtn');
+            const lockPassword = document.getElementById('lockPassword');
+
+            // Modal
+            const driveModal = document.getElementById('driveModal');
+            const driveLinkInput = document.getElementById('driveLinkInput');
+            const driveAddBtn = document.getElementById('driveAddBtn');
+            const driveCancelBtn = document.getElementById('driveCancelBtn');
+
+            // Export/Import
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const importFileInput = document.getElementById('importFileInput');
+
+            // ----- TOAST -----
+            const toast = document.getElementById('toast');
+            let toastTimeout;
+
+            function showToast(message) {
+                toast.textContent = message || '📂 Membuka dokumen...';
+                toast.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // ----- UPDATE MODE UI -----
+            function updateModeUI() {
+                const allUploadWrappers = document.querySelectorAll('.upload-wrapper');
+                const allRemoveButtons = document.querySelectorAll('.remove-file');
+                const allFileInputs = document.querySelectorAll('.upload-wrapper input[type="file"]');
+                const allDriveHints = document.querySelectorAll('.drive-hint');
+
+                if (isLocked) {
+                    modeBadge.textContent = 'Hanya Baca';
+                    modeBadge.className = 'badge-mode readonly';
+                    lockBtn.textContent = '🔓 Buka Kunci';
+                    lockBtn.className = 'btn-lock unlock';
+
+                    allUploadWrappers.forEach(w => w.classList.add('hidden-upload'));
+                    allFileInputs.forEach(input => input.disabled = true);
+                    allRemoveButtons.forEach(btn => btn.classList.add('readonly'));
+                    allDriveHints.forEach(hint => hint.classList.add('readonly'));
+                    document.querySelectorAll('.lock-overlay').forEach(el => el.style.display = 'none');
+
+                } else {
+                    modeBadge.textContent = 'Dapat Diedit';
+                    modeBadge.className = 'badge-mode editable';
+                    lockBtn.textContent = '🔒 Kunci';
+                    lockBtn.className = 'btn-lock';
+
+                    allUploadWrappers.forEach(w => w.classList.remove('hidden-upload'));
+                    allFileInputs.forEach(input => input.disabled = false);
+                    allRemoveButtons.forEach(btn => btn.classList.remove('readonly'));
+                    allDriveHints.forEach(hint => hint.classList.remove('readonly'));
+                    document.querySelectorAll('.lock-overlay').forEach(el => el.style.display = 'block');
+                }
+
+                updateAllDocNames();
+            }
+
+            // ----- UPDATE NAMA DOKUMEN (untuk klik buka) -----
+            function updateAllDocNames() {
+                document.querySelectorAll('.doc-item .doc-name').forEach(el => {
+                    const item = el.closest('.doc-item');
+                    if (!item) return;
+                    const files = item._uploadedFiles || [];
+                    const hasFile = files.length > 0;
+
+                    const newEl = el.cloneNode(true);
+                    el.parentNode.replaceChild(newEl, el);
+
+                    if (hasFile) {
+                        newEl.classList.add('has-file');
+                        const count = files.length;
+                        newEl.innerHTML = newEl.textContent.replace(/📎 \d+ file/, '') + ` <span class="file-indicator-doc">📎 ${count} file</span>`;
+                    } else {
+                        newEl.classList.remove('has-file');
+                    }
+
+                    newEl.style.cursor = hasFile ? 'pointer' : 'default';
+                    newEl.title = hasFile ? 'Klik untuk membuka file' : 'Belum ada file';
+
+                    newEl.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const files = item._uploadedFiles || [];
+                        if (files.length === 0) {
+                            showToast('⚠️ Belum ada file untuk dokumen ini');
+                            return;
+                        }
+
+                        const firstFile = files[0];
+                        if (firstFile.isDrive && firstFile.previewUrl) {
+                            window.open(firstFile.previewUrl, '_blank');
+                            showToast(`☁️ Membuka: ${firstFile.name} di Google Drive`);
+                        } else if (firstFile.blobUrl) {
+                            window.open(firstFile.blobUrl, '_blank');
+                            showToast(`📂 Membuka: ${firstFile.name}`);
+                        } else {
+                            showToast('⚠️ File tidak dapat dibuka');
+                        }
+                    });
+                });
+            }
+
+            // ----- LOCK / UNLOCK -----
+            function toggleLock() {
+                if (isLocked) {
+                    const enteredPassword = lockPassword.value.trim();
+                    if (enteredPassword === PASSWORD) {
+                        isLocked = false;
+                        updateModeUI();
+                        showToast('🔓 Mode Dapat Diedit - Anda dapat upload & hapus file');
+                        lockPassword.value = '';
+                    } else {
+                        showToast('❌ Password salah!');
+                        lockPassword.value = '';
+                        lockPassword.focus();
+                    }
+                } else {
+                    isLocked = true;
+                    updateModeUI();
+                    showToast('🔒 Mode Hanya Baca - Klik nama dokumen untuk membuka file');
+                    lockPassword.value = '';
+                }
+            }
+
+            lockBtn.addEventListener('click', toggleLock);
+            lockPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') toggleLock();
+            });
+
+            // ----- ACCORDION -----
+            const wrappers = document.querySelectorAll('.step-wrapper');
+            wrappers.forEach((wrapper) => {
+                const header = wrapper.querySelector('.step-header');
+                header.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isActive = wrapper.classList.contains('active');
+                    wrappers.forEach(w => w.classList.remove('active'));
+                    if (!isActive) {
+                        wrapper.classList.add('active');
+                    }
+                });
+            });
+
+            // ----- GOOGLE DRIVE MODAL -----
+            function openDriveModal(target) {
+                if (isLocked) {
+                    showToast('🔒 Mode Hanya Baca - Tidak bisa menambahkan file');
+                    return;
+                }
+                currentDriveTarget = target;
+                driveModal.classList.add('show');
+                driveLinkInput.value = '';
+                driveLinkInput.focus();
+            }
+
+            function closeDriveModal() {
+                driveModal.classList.remove('show');
+                currentDriveTarget = null;
+                driveLinkInput.value = '';
+            }
+
+            function addDriveFile() {
+                const link = driveLinkInput.value.trim();
+                if (!link) {
+                    showToast('⚠️ Masukkan link Google Drive terlebih dahulu');
+                    return;
+                }
+
+                let fileId = null;
+                const patterns = [
+                    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+                    /\/d\/([a-zA-Z0-9_-]+)/,
+                    /id=([a-zA-Z0-9_-]+)/
+                ];
+
+                for (const pattern of patterns) {
+                    const match = link.match(pattern);
+                    if (match) {
+                        fileId = match[1];
+                        break;
+                    }
+                }
+
+                if (!fileId) {
+                    showToast('⚠️ Link Google Drive tidak valid. Pastikan link benar.');
+                    return;
+                }
+
+                const previewUrl = `https://drive.google.com/file/d/${fileId}/view`;
+
+                let fileName = 'Google Drive File';
+                const nameMatch = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (nameMatch) {
+                    const parts = link.split('/');
+                    const lastPart = parts[parts.length - 1];
+                    if (lastPart && !lastPart.includes('?')) {
+                        const cleanName = lastPart.replace(/[_-]/g, ' ').trim();
+                        if (cleanName.length > 3) {
+                            fileName = cleanName;
+                        }
+                    }
+                }
+
+                if (currentDriveTarget) {
+                    const container = currentDriveTarget.closest('.doc-item');
+                    if (!container) { closeDriveModal(); return; }
+
+                    if (!container._uploadedFiles) container._uploadedFiles = [];
+
+                    const isDuplicate = container._uploadedFiles.some(f => f.fileId === fileId);
+                    if (isDuplicate) {
+                        showToast('⚠️ File sudah ada di daftar');
+                        closeDriveModal();
+                        return;
+                    }
+
+                    container._uploadedFiles.push({
+                        name: fileName || 'Google Drive File',
+                        fileId: fileId,
+                        previewUrl: previewUrl,
+                        isDrive: true,
+                        size: 0
+                    });
+
+                    updateFileListUI(container);
+                    closeDriveModal();
+                    showToast(`✅ File dari Google Drive berhasil ditambahkan: ${fileName}`);
+                    saveData();
+                }
+            }
+
+            // ----- UPLOAD LOGIC per doc-item -----
+            const docItems = document.querySelectorAll('.doc-item');
+
+            docItems.forEach((item) => {
+                const fileInput = item.querySelector('input[type="file"]');
+                if (!fileInput) return;
+
+                const fileListContainer = item.querySelector('.file-list');
+
+                if (!item._uploadedFiles) {
+                    item._uploadedFiles = [];
+                }
+
+                const driveHint = item.querySelector('.drive-hint');
+                if (driveHint) {
+                    driveHint.style.cursor = 'pointer';
+                    driveHint.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openDriveModal(item);
+                    });
+                    driveHint.title = 'Klik untuk menambahkan file dari Google Drive';
+                }
+
+                function formatSize(bytes) {
+                    if (bytes < 1024) return bytes + ' B';
+                    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                    return (bytes / 1048576).toFixed(1) + ' MB';
+                }
+
+                function getFileIcon(filename, isDrive = false) {
+                    if (isDrive) return '☁️';
+                    const ext = filename.split('.').pop().toLowerCase();
+                    const icons = {
+                        'pdf': '📄', 'doc': '📝', 'docx': '📝',
+                        'xls': '📊', 'xlsx': '📊',
+                        'png': '🖼️', 'jpg': '🖼️', 'jpeg': '🖼️',
+                        'txt': '📃', 'ppt': '📑', 'pptx': '📑'
+                    };
+                    return icons[ext] || '📎';
+                }
+
+                function updateFileListUI(docItem) {
+                    const list = docItem.querySelector('.file-list');
+                    const files = docItem._uploadedFiles || [];
+
+                    updateAllDocNames();
+
+                    list.innerHTML = '';
+                    if (files.length === 0) {
+                        const empty = document.createElement('span');
+                        empty.className = 'empty-files';
+                        empty.textContent = 'Belum ada file';
+                        list.appendChild(empty);
+                        return;
+                    }
+
+                    files.forEach((fileData, index) => {
+                        const chip = document.createElement('span');
+                        chip.className = 'file-chip';
+
+                        const icon = document.createElement('span');
+                        icon.className = 'file-icon';
+                        icon.textContent = getFileIcon(fileData.name, fileData.isDrive);
+
+                        const nameSpan = document.createElement('span');
+                        nameSpan.className = 'file-name';
+                        nameSpan.textContent = fileData.name || 'File';
+                        nameSpan.title = fileData.name || 'File';
+
+                        const sizeSpan = document.createElement('span');
+                        sizeSpan.className = 'file-size';
+                        if (fileData.isDrive) {
+                            sizeSpan.textContent = '☁️ Google Drive';
+                        } else {
+                            sizeSpan.textContent = formatSize(fileData.size || 0);
+                        }
+
+                        const actions = document.createElement('span');
+                        actions.className = 'file-actions';
+
+                        const openBtn = document.createElement('button');
+                        openBtn.className = 'btn-open' + (fileData.isDrive ? ' google-drive' : '');
+                        if (fileData.isDrive) {
+                            openBtn.innerHTML = '☁️ Buka di Drive';
+                        } else {
+                            openBtn.innerHTML = '📂 Buka';
+                        }
+                        openBtn.type = 'button';
+                        openBtn.title = fileData.isDrive ? 'Buka di Google Drive' : 'Buka dokumen';
+                        openBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            if (fileData.isDrive && fileData.previewUrl) {
+                                window.open(fileData.previewUrl, '_blank');
+                                showToast(`☁️ Membuka: ${fileData.name} di Google Drive`);
+                            } else if (fileData.blobUrl) {
+                                window.open(fileData.blobUrl, '_blank');
+                                showToast(`📂 Membuka: ${fileData.name}`);
+                            } else {
+                                showToast('⚠️ File tidak dapat dibuka');
+                            }
+                        });
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'remove-file';
+                        removeBtn.textContent = '✕';
+                        removeBtn.type = 'button';
+                        removeBtn.title = 'Hapus file';
+                        removeBtn.setAttribute('data-index', index);
+                        removeBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            if (isLocked) {
+                                showToast('🔒 Mode Hanya Baca - Tidak bisa menghapus file');
+                                return;
+                            }
+                            const idx = parseInt(this.getAttribute('data-index'), 10);
+                            if (!isNaN(idx) && idx >= 0 && idx < files.length) {
+                                if (files[idx].blobUrl) {
+                                    URL.revokeObjectURL(files[idx].blobUrl);
+                                }
+                                files.splice(idx, 1);
+                                docItem._uploadedFiles = files;
+                                updateFileListUI(docItem);
+                                const input = docItem.querySelector('input[type="file"]');
+                                if (input) input.value = '';
+                                showToast(`🗑️ File dihapus`);
+                                saveData();
+                            }
+                        });
+
+                        if (isLocked) {
+                            removeBtn.classList.add('readonly');
+                        }
+
+                        actions.appendChild(openBtn);
+                        actions.appendChild(removeBtn);
+
+                        chip.appendChild(icon);
+                        chip.appendChild(nameSpan);
+                        chip.appendChild(sizeSpan);
+                        chip.appendChild(actions);
+                        list.appendChild(chip);
+                    });
+                }
+
+                fileInput.addEventListener('change', function(e) {
+                    if (isLocked) {
+                        showToast('🔒 Mode Hanya Baca - Tidak bisa upload file');
+                        this.value = '';
+                        return;
+                    }
+
+                    const files = this.files;
+                    if (files.length === 0) return;
+
+                    let filesAdded = 0;
+                    const currentFiles = item._uploadedFiles || [];
+
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const isDuplicate = currentFiles.some(f => f.name === file.name && !f.isDrive);
+                        if (isDuplicate) continue;
+
+                        const blobUrl = URL.createObjectURL(file);
+                        currentFiles.push({
+                            name: file.name,
+                            blobUrl: blobUrl,
+                            size: file.size,
+                            isDrive: false
+                        });
+                        filesAdded++;
+                    }
+
+                    if (filesAdded > 0) {
+                        item._uploadedFiles = currentFiles;
+                        updateFileListUI(item);
+                        showToast(`✅ ${filesAdded} file berhasil diupload`);
+                        saveData();
+                    } else {
+                        showToast('⚠️ File sudah ada, tidak ditambahkan');
+                    }
+
+                    this.value = '';
+                });
+
+                updateFileListUI(item);
+
+                window.addEventListener('beforeunload', function() {
+                    const allFiles = item._uploadedFiles || [];
+                    allFiles.forEach(f => {
+                        if (f.blobUrl) URL.revokeObjectURL(f.blobUrl);
+                    });
+                });
+            });
+
+            // ----- MODAL EVENTS -----
+            driveAddBtn.addEventListener('click', addDriveFile);
+            driveCancelBtn.addEventListener('click', closeDriveModal);
+
+            driveLinkInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addDriveFile();
+                }
+            });
+
+            driveModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDriveModal();
+                }
+            });
+
+            // ----- EXPORT/IMPORT -----
+            function exportData() {
+                const allData = {};
+                document.querySelectorAll('.doc-item').forEach((item) => {
+                    const docId = item.getAttribute('data-doc') || 'unknown';
+                    const files = item._uploadedFiles || [];
+                    const saveableFiles = files.map(f => ({
+                        name: f.name,
+                        size: f.size,
+                        isDrive: f.isDrive || false,
+                        fileId: f.fileId || null,
+                        previewUrl: f.previewUrl || null
+                    }));
+                    allData[docId] = saveableFiles;
+                });
+
+                const dataStr = JSON.stringify(allData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `dokumen_penjualan_furniture_${new Date().toISOString().slice(0,10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('✅ Data berhasil diexport!');
+            }
+
+            function importData(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const allData = JSON.parse(e.target.result);
+                        document.querySelectorAll('.doc-item').forEach((item) => {
+                            const docId = item.getAttribute('data-doc') || 'unknown';
+                            if (allData[docId]) {
+                                const files = allData[docId].map(f => ({
+                                    ...f,
+                                    blobUrl: null
+                                }));
+                                item._uploadedFiles = files;
+                                updateFileListUI(item);
+                            }
+                        });
+                        showToast('✅ Data berhasil diimport!');
+                        saveData();
+                    } catch(err) {
+                        showToast('❌ File JSON tidak valid!');
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            function resetData() {
+                if (confirm('⚠️ Yakin ingin menghapus semua data dokumen?')) {
+                    document.querySelectorAll('.doc-item').forEach((item) => {
+                        item._uploadedFiles = [];
+                        updateFileListUI(item);
+                    });
+                    localStorage.removeItem('salesDocsData');
+                    showToast('🗑️ Semua data telah direset');
+                    updateAllDocNames();
+                }
+            }
+
+            exportBtn.addEventListener('click', exportData);
+            importBtn.addEventListener('click', function() { importFileInput.click(); });
+            importFileInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    importData(this.files[0]);
+                    this.value = '';
+                }
+            });
+            resetBtn.addEventListener('click', resetData);
+
+            // ----- SAVE TO LOCAL STORAGE -----
+            function saveData() {
+                const allData = {};
+                document.querySelectorAll('.doc-item').forEach((item) => {
+                    const docId = item.getAttribute('data-doc') || 'unknown';
+                    const files = item._uploadedFiles || [];
+                    const saveableFiles = files.map(f => ({
+                        name: f.name,
+                        size: f.size,
+                        isDrive: f.isDrive || false,
+                        fileId: f.fileId || null,
+                        previewUrl: f.previewUrl || null
+                    }));
+                    allData[docId] = saveableFiles;
+                });
+                try {
+                    localStorage.setItem('salesDocsData', JSON.stringify(allData));
+                } catch(e) {}
+            }
+
+            function loadData() {
+                try {
+                    const raw = localStorage.getItem('salesDocsData');
+                    if (!raw) return;
+                    const allData = JSON.parse(raw);
+                    document.querySelectorAll('.doc-item').forEach((item) => {
+                        const docId = item.getAttribute('data-doc') || 'unknown';
+                        if (allData[docId]) {
+                            const files = allData[docId].map(f => ({
+                                ...f,
+                                blobUrl: null
+                            }));
+                            item._uploadedFiles = files;
+                            updateFileListUI(item);
+                        }
+                    });
+                } catch(e) {}
+            }
+
+            loadData();
+            setInterval(saveData, 5000);
+            window.addEventListener('beforeunload', saveData);
+
+            // ----- INITIAL STATE -----
+            isLocked = false;
+            updateModeUI();
+            lockPassword.value = '';
+
+            console.log('🪑 Furniture Living - Alur Penjualan Order-to-Cash');
+            console.log('💡 Klik nama dokumen untuk membuka file');
+            console.log('📤 Export/Import data untuk berbagi dengan tim');
+
+        })();
+    </script>
+
+</body>
+</html>
